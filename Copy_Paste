@@ -1,0 +1,63 @@
+# I started working on this thinking that I would need to move files out of individuals directories into a common folder at the end of the day.  
+# This was never truly completed 
+
+import os
+import shutil
+directories = [r'Y:\Test\A',r'Y:\Test\B']  # make a list of the directories
+destPath = r'Y:\MobileSolutions\Paste'  # The final destination
+forms = r'Y:\MobileSolutions\Forms' # blank forms to replace the moved forms
+
+for sourcePath in directories:
+	for root, dirs, files in os.walk(sourcePath):
+
+		#figure out where we're going
+		dest = destPath + root.replace(sourcePath, '')
+
+		#if we're in a directory that doesn't exist in the destination folder
+		#then create a new folder
+		if not os.path.isdir(dest):
+			os.mkdir(dest)
+		#    print 'Directory created at: ' + dest
+
+		#loop through all files in the directory
+		for f in files:
+
+			#compute current (old) & new file locations
+			rt = root #saving this for later
+			oldLoc = root + '\\' + f
+			newLoc = dest + '\\' + f
+
+			if not os.path.isfile(newLoc):
+				try:
+					shutil.move(oldLoc, newLoc)
+				#    print 'File ' + f + ' moved to ' + dest + '.'
+				except IOError:
+					print 'file "' + f + '" already exists'
+	
+
+for root, dirs, files in os.walk(forms):
+	
+	path = root
+	
+	for form in files:
+		
+		#folder = dirs
+		#permForm = files
+	
+		#compute current (old) file locations
+		oldLoc1 = path + '\\' + form
+		print "oldLoc1 = " + oldLoc1
+			
+		for t in directories:
+			for root, dirs, files in os.walk(t):
+				dest = t + root.replace(t, '')
+				print dest
+				newLoc1 = dest + '\\' + form
+				print newLoc1
+
+				if not os.path.isfile(newLoc1):
+					try:
+						shutil.copy2(oldLoc1, newLoc1)
+						print 'File ' + form + ' copied to ' + dest + '.'
+					except IOError:
+						print 'file "' + form + '" already exists'		
